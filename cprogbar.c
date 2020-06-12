@@ -1,56 +1,68 @@
-#include <stdlib.h>
-#include <stdio.h>
+//! Micro progress bar implementation.
+//!
+//! Features:
+//! - integer math only
+//! - percentage display and/or bar display
+//!
+//! Requires functioning printf + stdout on the host system.
+
+#include "cprogbar.h"
+
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-//! from https://stackoverflow.com/a/25934909
-uint32_t baseTenDigits(uint32_t x) {
-    static const unsigned char guess[33] = {
-        0, 0, 0, 0, 1, 1, 1, 2, 2, 2,
-        3, 3, 3, 3, 4, 4, 4, 5, 5, 5,
-        6, 6, 6, 6, 7, 7, 7, 8, 8, 8,
-        9, 9, 9
-    };
-    static const uint32_t tenToThe[] = {
-        1, 10, 100, 1000, 10000, 100000,
-        1000000, 10000000, 100000000, 1000000000,
-    };
-    uint32_t digits = guess[x ? 32 - __builtin_clz(x) : 0];
-    return digits + (x >= tenToThe[digits]);
-}
+//! https://stackoverflow.com/a/18581693
+static const size_t pow10arr[] = {
+    1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000};
+static size_t quick_pow10(size_t n) { return pow10arr[n]; }
 
+size_t cprog_pct_or_bar(size_t current_pct, size_t new_offset,
+                        size_t max_offset, size_t frac_digits, int show_pct
+#if CPROGBAR_ENABLE_BAR
+                        ,
+                        int show_bar
+#endif
+) {
+  size_t new_pct = (new_offset * quick_pow10(frac_digits + 2)) / max_offset;
 
-size_t cprogbar(size_t current_offset, size_t new_offset, size_t max_offset) {
+  if (new_pct > current_pct) {
+    size_t pow10 = quick_pow10(frac_digits);
+    // integer part of the pct display
+    size_t intpct = new_pct / pow10;
 
+    // assume either show_pct || show_bar
+    printf("\r");
 
-
-    printf("\r%zu.%0*zu", 4, 0, 4);
-    return 0;
-}
-
-#include <unistd.h>
-int main(int argc, char **argv) {
-    if (argc < 2) {
-        return -1;
+    if (show_pct) {
+      if (frac_digits > 0) {
+        printf("%3zu.%0*zu%%", intpct, (int)frac_digits, new_pct % pow10);
+      } else {
+        printf("%3zu%%", intpct);
+      }
     }
 
-    unsigned long max_offset = strtoul(argv[1], NULL, 0);
-    size_t progbar = 0;
+#if CPROGBAR_ENABLE_BAR
+    if (show_bar) {
+      printf(" ");
+      int chars_written = 0;
+      size_t i = 0;
+      for (; i < (intpct) / 2; i++) {
+        chars_written += printf("█");
+      }
+      if ((intpct)&1) {
+        chars_written += printf("▌");
+        i++;
+      }
+      // move cursor to the end
+      for (; i < 50; i++) {
+        printf(" ");
+      }
+    }
+#endif
 
-    // for (size_t i = 0; i < max_offset; i++) {
-    //     progbar = cprogbar(progbar, i, max_offset);
-    //     usleep(100);
-    // }
+    fflush(stdout);
+  }
 
-    printf("%zu\n", baseTenDigits(1));
-    printf("%zu\n", baseTenDigits(10));
-    printf("%zu\n", baseTenDigits(100));
-    printf("%zu\n", baseTenDigits(1000));
-    printf("%zu\n", baseTenDigits(10000));
-    printf("%zu\n", baseTenDigits(100000));
-    printf("%zu\n", baseTenDigits(1000000));
-    printf("%zu\n", baseTenDigits(10000000));
-    printf("%zu\n", baseTenDigits(100000000));
-    printf("%zu\n", baseTenDigits(2567));
-
-    return 0;
+  return new_pct;
 }
