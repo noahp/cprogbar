@@ -45,17 +45,20 @@ size_t cprog_pct_or_bar(size_t current_pct, size_t new_offset,
 #if CPROGBAR_ENABLE_BAR
     if (show_bar) {
       printf(" ");
-      int chars_written = 0;
+
+      // bar width is 50 characters, to simplify math
+      const size_t bar_width = 50;
+
       size_t i = 0;
       for (; i < (intpct) / 2; i++) {
-        chars_written += printf("█");
+        printf("█");
       }
-      if ((intpct)&1) {
-        chars_written += printf("▌");
+      if ((intpct)&1U) {
+        printf("▌");
         i++;
       }
       // move cursor to the end
-      for (; i < 50; i++) {
+      for (; i < bar_width; i++) {
         printf(" ");
       }
     }

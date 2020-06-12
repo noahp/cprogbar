@@ -2,6 +2,8 @@
 
 Yet Another simple progress indicator in C.
 
+![example](./example.gif)
+
 ## Usage
 
 ```c
@@ -40,6 +42,14 @@ size -t cprogbar-cross.o
 ```
 
 See the example bars by running `make`.
+
+## Testing
+
+Helper script to run some test compilation + lint commands in Docker:
+
+```bash
+./test.sh
+```
 
 ## TODO
 

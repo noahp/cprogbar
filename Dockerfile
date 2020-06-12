@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     clang-10 \
     clang-format-10 \
+    clang-tidy-10 \
     gcc-10 \
     gcc-10-multilib \
     gcc-arm-none-eabi \

@@ -27,4 +27,7 @@ docker run -v "$(pwd)":/mnt/workspace -t "$DOCKER_IMAGE_NAME" bash -c "set -ex &
   CC=arm-none-eabi-gcc CFLAGS='-mcpu=cortex-m4 -Os' make cross-build &&
   make clean &&
   CC=arm-none-eabi-gcc CFLAGS='-mcpu=cortex-m4 -Os -DCPROGBAR_ENABLE_BAR=0' make cross-build &&
-  clang-format-10 -style=file $(find . -name '*.[ch]' | awk NF=NF RS=) --dry-run -Werror"
+  clang-format-10 -style=file $(find . -name '*.[ch]' | awk NF=NF RS=) --dry-run -Werror &&
+  clang-tidy-10 -checks='*' cprogbar.c -- -I./ &&
+  make clean &&
+  scan-build-10 --status-bugs make test"
