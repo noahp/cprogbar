@@ -18,16 +18,4 @@ DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME:-$(basename -s .git "$(git remote --verbos
 DOCKER_BUILDKIT=1 docker build -t "$DOCKER_IMAGE_NAME" --build-arg "UID=$(id -u)" -f Dockerfile .
 
 # tests in the docker container
-docker run -v "$(pwd)":/mnt/workspace -t "$DOCKER_IMAGE_NAME" bash -c "set -ex && cd /mnt/workspace &&
-  make clean &&
-  CC=clang-10 make &&
-  make clean &&
-  CC=gcc-10 make &&
-  make clean &&
-  CC=arm-none-eabi-gcc CFLAGS='-mcpu=cortex-m4 -Os' make cross-build &&
-  make clean &&
-  CC=arm-none-eabi-gcc CFLAGS='-mcpu=cortex-m4 -Os -DCPROGBAR_ENABLE_BAR=0' make cross-build &&
-  clang-format-10 -style=file $(find . -name '*.[ch]' | awk NF=NF RS=) --dry-run -Werror &&
-  clang-tidy-10 -checks='*' cprogbar.c -- -I./ &&
-  make clean &&
-  scan-build-10 --status-bugs make test"
+docker run -v "$(pwd)":/mnt/workspace -t "$DOCKER_IMAGE_NAME" bash -c "cd /mnt/workspace && ./test-cmds.sh"
