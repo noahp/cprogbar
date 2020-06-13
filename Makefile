@@ -1,4 +1,4 @@
-CFLAGS += -Wall -Wextra -Wpedantic -Werror
+CFLAGS += -Wall -Wextra -Wpedantic -Werror -Wcast-align
 
 # Make sure we don't use variable length arrays by accident
 CFLAGS += -Werror=vla

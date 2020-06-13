@@ -36,20 +36,17 @@ If you're really tight on code space, and don't need the bar output, you can set
 when targeting Cortex-M4:
 
 ```bash
-# Bar enable
-❯ CC=arm-none-eabi-gcc CFLAGS="-mcpu=cortex-m4 -Os -DCPROGBAR_ENABLE_BAR=1" make cross-build
-arm-none-eabi-gcc -mcpu=cortex-m4 -Os -DCPROGBAR_ENABLE_BAR=1 -Wall -Wextra -Wpedantic -Werror -c cprogbar.c -o cprogbar-cross.o
-size -t cprogbar-cross.o
+# Bar enabled
+❯ CC=arm-none-eabi-gcc CFLAGS='-mcpu=cortex-m4 -Os -DCPROGBAR_ENABLE_BAR=0' make clean cross-build
    text    data     bss     dec     hex filename
-    232       0       0     232      e8 cprogbar-cross.o
-    232       0       0     232      e8 (TOTALS)
+    188       0       0     188      bc cprogbar-cross.o
+    188       0       0     188      bc (TOTALS)
 
-❯ CC=arm-none-eabi-gcc CFLAGS="-mcpu=cortex-m4 -Os -DCPROGBAR_ENABLE_BAR=0" make cross-build
-arm-none-eabi-gcc -mcpu=cortex-m4 -Os -DCPROGBAR_ENABLE_BAR=0 -Wall -Wextra -Wpedantic -Werror -c cprogbar.c -o cprogbar-cross.o
-size -t cprogbar-cross.o
+# Bar disabled
+❯ CC=arm-none-eabi-gcc CFLAGS='-mcpu=cortex-m4 -Os' make clean cross-build
    text    data     bss     dec     hex filename
-    152       0       0     152      98 cprogbar-cross.o
-    152       0       0     152      98 (TOTALS)
+    312       0       0     312     138 cprogbar-cross.o
+    312       0       0     312     138 (TOTALS)
 ```
 
 See the example bars by running `make`.
@@ -67,7 +64,7 @@ so this version loads the progress indicator into a stack buffer and issues 1
 |version|CPROGBAR_ENABLE_BAR=0 .text (bytes)|CPROGBAR_ENABLE_BAR=1|
 |---|---|---|
 |1|152|232|
-|2|195 (+43)|319 (+87)|
+|2|188 (+36)|312 (+80)|
 
 <a name="footnote1">1</a>: I should actually measure this in qemu instead of
 making outlandish claims 😔

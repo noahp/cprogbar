@@ -61,16 +61,19 @@ size_t cprog_pct_or_bar(size_t current_pct, size_t new_offset,
     }
 
 #if CPROGBAR_ENABLE_BAR
+    struct uint24_t {
+      uint8_t val[3];
+    };
     if (show_bar) {
       outbuf[outbuf_idx++] = ' ';
 
       size_t i = 0;
-      for (; i < (intpct) / 2; i++) {
-        memcpy(&outbuf[outbuf_idx], "█", strlen("█"));
+      for (; i < (intpct / 2); i++) {
+        *(struct uint24_t *)&outbuf[outbuf_idx] = *(struct uint24_t *)"█";
         outbuf_idx += strlen("█");
       }
       if ((intpct)&1U) {
-        memcpy(&outbuf[outbuf_idx], "▌", strlen("▌"));
+        *(struct uint24_t *)&outbuf[outbuf_idx] = *(struct uint24_t *)"▌";
         outbuf_idx += strlen("▌");
         i++;
       }
@@ -82,7 +85,11 @@ size_t cprog_pct_or_bar(size_t current_pct, size_t new_offset,
 #endif
 
     outbuf[outbuf_idx] = '\0';
-    printf("%s", outbuf);
+
+    // fputs saves the printf("%s") format string overhead, about 7 bytes
+    // savings
+    fputs(outbuf, stdout);
+
     fflush(stdout);
   }
 
