@@ -11,6 +11,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 //! https://stackoverflow.com/a/18581693
 static const size_t pow10arr[] = {
@@ -19,11 +20,26 @@ static size_t quick_pow10(size_t n) { return pow10arr[n]; }
 
 size_t cprog_pct_or_bar(size_t current_pct, size_t new_offset,
                         size_t max_offset, size_t frac_digits, int show_pct
+
 #if CPROGBAR_ENABLE_BAR
                         ,
                         int show_bar
 #endif
 ) {
+#if CPROGBAR_ENABLE_BAR
+// bar width is fixed to 50 characters, to simplify math
+#define bar_width 50
+#endif
+
+  // spend some stack to limit the number of calls to printf. frac_digits is
+  // practically limited here, TODO verify correctness in these assumptions
+  char outbuf[sizeof("100.") - 1 + sizeof("000000000") - 1
+#if CPROGBAR_ENABLE_BAR
+              + (sizeof("▌") - 1) * bar_width
+#endif
+              + 1];
+  size_t outbuf_idx = 0;
+
   size_t new_pct = (new_offset * quick_pow10(frac_digits + 2)) / max_offset;
 
   if (new_pct > current_pct) {
@@ -32,38 +48,41 @@ size_t cprog_pct_or_bar(size_t current_pct, size_t new_offset,
     size_t intpct = new_pct / pow10;
 
     // assume either show_pct || show_bar
-    printf("\r");
+    outbuf[outbuf_idx++] = '\r';
 
     if (show_pct) {
       if (frac_digits > 0) {
-        printf("%3zu.%0*zu%%", intpct, (int)frac_digits, new_pct % pow10);
+        outbuf_idx +=
+            (size_t)sprintf(&outbuf[outbuf_idx], "%3zu.%0*zu%%", intpct,
+                            (int)frac_digits, new_pct % pow10);
       } else {
-        printf("%3zu%%", intpct);
+        outbuf_idx += (size_t)sprintf(&outbuf[outbuf_idx], "%3zu%%", intpct);
       }
     }
 
 #if CPROGBAR_ENABLE_BAR
     if (show_bar) {
-      printf(" ");
-
-      // bar width is 50 characters, to simplify math
-      const size_t bar_width = 50;
+      outbuf[outbuf_idx++] = ' ';
 
       size_t i = 0;
       for (; i < (intpct) / 2; i++) {
-        printf("█");
+        memcpy(&outbuf[outbuf_idx], "█", strlen("█"));
+        outbuf_idx += strlen("█");
       }
       if ((intpct)&1U) {
-        printf("▌");
+        memcpy(&outbuf[outbuf_idx], "▌", strlen("▌"));
+        outbuf_idx += strlen("▌");
         i++;
       }
       // move cursor to the end
       for (; i < bar_width; i++) {
-        printf(" ");
+        outbuf[outbuf_idx++] = ' ';
       }
     }
 #endif
 
+    outbuf[outbuf_idx] = '\0';
+    printf("%s", outbuf);
     fflush(stdout);
   }
 

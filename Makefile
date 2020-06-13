@@ -1,5 +1,8 @@
 CFLAGS += -Wall -Wextra -Wpedantic -Werror
 
+# Make sure we don't use variable length arrays by accident
+CFLAGS += -Werror=vla
+
 ifneq ($(findstring clang,$(shell $(CC) --version)),)
 CFLAGS += -Weverything
 endif

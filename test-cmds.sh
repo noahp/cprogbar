@@ -17,12 +17,16 @@ CC=arm-none-eabi-gcc CFLAGS='-mcpu=cortex-m4 -Os' make clean cross-build
 CC=arm-none-eabi-gcc CFLAGS='-mcpu=cortex-m4 -Os -DCPROGBAR_ENABLE_BAR=0' make clean cross-build
 
 # same but with clang cross compiling
-ARM_NONE_EABI_SYSROOT=$(arm-none-eabi-gcc -print-sysroot)
-
 # NB the apt-installed arm-none-eabi-gcc returns nothing from `-print-sysroot`,
 # so fall back on hard coded lib dir (which is installed as an apt package
 # dependency)
+ARM_NONE_EABI_SYSROOT=$(arm-none-eabi-gcc -print-sysroot)
 ARM_NONE_EABI_SYSROOT=${ARM_NONE_EABI_SYSROOT:-/usr/lib/arm-none-eabi}
+CC=clang-10 \
+  CFLAGS="--target=arm-none-eabi -mcpu=cortex-m4 --sysroot=$ARM_NONE_EABI_SYSROOT -Oz" \
+  make clean cross-build
+
+# same but disable progress bar
 CC=clang-10 \
   CFLAGS="--target=arm-none-eabi -mcpu=cortex-m4 --sysroot=$ARM_NONE_EABI_SYSROOT -Oz -DCPROGBAR_ENABLE_BAR=0" \
   make clean cross-build
