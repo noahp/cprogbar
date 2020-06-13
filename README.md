@@ -32,7 +32,7 @@ for (size_t i = 0; i < max_offset; i++) {
 ```
 
 If you're really tight on code space, and don't need the bar output, you can set
-`CFLAGS='-DCPROGBAR_ENABLE_BAR=0'` when compiling. This saves about 80 bytes
+`CFLAGS='-DCPROGBAR_ENABLE_BAR=0'` when compiling. This saves about 108 bytes
 when targeting Cortex-M4:
 
 ```bash
