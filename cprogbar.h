@@ -15,8 +15,15 @@
 
 #include <stdlib.h>
 
+//! This enables using the bar form
 #if !defined(CPROGBAR_ENABLE_BAR)
 #define CPROGBAR_ENABLE_BAR 1
+#endif
+
+//! This enables using half-increment steps in the bar "▌"
+//! About 32 bytes extra for it.
+#if !defined(CPROGBAR_ENABLE_PARTIAL_BAR)
+#define CPROGBAR_ENABLE_PARTIAL_BAR 1
 #endif
 
 //! Percentage and/or bar

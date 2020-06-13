@@ -72,15 +72,13 @@ size_t cprog_pct_or_bar(size_t current_pct, size_t new_offset,
         *(struct uint24_t *)&outbuf[outbuf_idx] = *(struct uint24_t *)"█";
         outbuf_idx += strlen("█");
       }
+#if CPROGBAR_ENABLE_PARTIAL_BAR
       if ((intpct)&1U) {
         *(struct uint24_t *)&outbuf[outbuf_idx] = *(struct uint24_t *)"▌";
         outbuf_idx += strlen("▌");
         i++;
       }
-      // move cursor to the end
-      for (; i < bar_width; i++) {
-        outbuf[outbuf_idx++] = ' ';
-      }
+#endif
     }
 #endif
 

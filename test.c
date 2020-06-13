@@ -16,6 +16,10 @@ int main(int argc, char **argv) {
   unsigned long fractional_digits = strtoul(argv[2], NULL, 0);
   unsigned int us_delay = (unsigned int)strtoul(argv[3], NULL, 0);
 
+// hide cursor
+#define CSI "\x1B["
+  fputs(CSI "?25l", stdout);
+
   printf("Percent only:\n");
   size_t progbar = 0;
   for (size_t i = 0; i < max_offset; i++) {
@@ -39,6 +43,9 @@ int main(int argc, char **argv) {
     usleep(us_delay);
   }
   printf("\n");
+
+  // show cursor
+  fputs(CSI "?25h", stdout);
 
   return 0;
 }
