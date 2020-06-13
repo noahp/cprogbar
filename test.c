@@ -21,25 +21,8 @@ int main(int argc, char **argv) {
   fputs(CSI "?25l", stdout);
 
   printf("Percent only:\n");
-  size_t progbar = 0;
   for (size_t i = 0; i < max_offset; i++) {
-    progbar = cprogpct(progbar, i, max_offset, fractional_digits);
-    usleep(us_delay);
-  }
-  printf("\n");
-
-  printf("Bar only:\n");
-  progbar = 0;
-  for (size_t i = 0; i < max_offset; i++) {
-    progbar = cprogbar(progbar, i, max_offset, fractional_digits);
-    usleep(us_delay);
-  }
-  printf("\n");
-
-  printf("Both:\n");
-  progbar = 0;
-  for (size_t i = 0; i < max_offset; i++) {
-    progbar = cprogpct_and_bar(progbar, i, max_offset, fractional_digits);
+    cprog_pct_or_bar(i, max_offset, fractional_digits);
     usleep(us_delay);
   }
   printf("\n");
