@@ -37,16 +37,16 @@ when targeting Cortex-M4:
 
 ```bash
 # Bar enabled
-❯ CC=arm-none-eabi-gcc CFLAGS='-mcpu=cortex-m4 -Os -DCPROGBAR_ENABLE_BAR=0' make clean cross-build
-   text    data     bss     dec     hex filename
-    188       0       0     188      bc cprogbar-cross.o
-    188       0       0     188      bc (TOTALS)
-
-# Bar disabled
 ❯ CC=arm-none-eabi-gcc CFLAGS='-mcpu=cortex-m4 -Os' make clean cross-build
    text    data     bss     dec     hex filename
     296       0       0     296     128 cprogbar-cross.o
     296       0       0     296     128 (TOTALS)
+
+# Bar disabled
+❯ CC=arm-none-eabi-gcc CFLAGS='-mcpu=cortex-m4 -Os -DCPROGBAR_ENABLE_BAR=0' make clean cross-build
+   text    data     bss     dec     hex filename
+    188       0       0     188      bc cprogbar-cross.o
+    188       0       0     188      bc (TOTALS)
 ```
 
 See the example bars by running `make`.
@@ -83,7 +83,7 @@ however is calling printf on every interation, even if the fractional part will
 not change. Also I haven't measured the cpu usage when using soft float/double.
 
 Enabling a check to only print when the fractional part changes brings the size
-back to ~150 bytes.
+up to ~150 bytes.
 
 ## Testing
 
