@@ -69,6 +69,21 @@ so this version loads the progress indicator into a stack buffer and issues 1
 <a name="footnote1">1</a>: I should actually measure this in qemu instead of
 making outlandish claims 😔
 
+A very simple floating-point math version of this function could be:
+
+```c
+printf("\r%3.*f%%", (int)frac_digits,
+        ((float)new_offset * 100.0f) / (float)max_offset);
+
+fflush(stdout);
+```
+
+That has nice code size properties: 82/89 bytes for Cortex-M0+/Cortex-M4. It
+however is calling printf on every interation, even if the fractional part will
+not change. Also I haven't measured the cpu usage when using soft float/double.
+
+Enabling a check to only print when the fractional part changes brings the size
+back to ~150 bytes.
 
 ## Testing
 
