@@ -11,10 +11,10 @@ CC=gcc-10 make clean example
 CC=clang-10 make clean example
 
 # build with gcc-arm for cortex-m4
-CC=arm-none-eabi-gcc CFLAGS='-mcpu=cortex-m4 -Os' make clean cross-build
+CC=arm-none-eabi-gcc CFLAGS='-mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -Os' make clean cross-build
 
 # same but with bar disabled
-CC=arm-none-eabi-gcc CFLAGS='-mcpu=cortex-m4 -Os -DCPROGBAR_ENABLE_BAR=0' make clean cross-build
+CC=arm-none-eabi-gcc CFLAGS='-mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -Os -DCPROGBAR_ENABLE_BAR=0' make clean cross-build
 
 # same but with clang cross compiling
 # NB the apt-installed arm-none-eabi-gcc returns nothing from `-print-sysroot`,
@@ -23,12 +23,12 @@ CC=arm-none-eabi-gcc CFLAGS='-mcpu=cortex-m4 -Os -DCPROGBAR_ENABLE_BAR=0' make c
 ARM_NONE_EABI_SYSROOT=$(arm-none-eabi-gcc -print-sysroot)
 ARM_NONE_EABI_SYSROOT=${ARM_NONE_EABI_SYSROOT:-/usr/lib/arm-none-eabi}
 CC=clang-10 \
-  CFLAGS="--target=arm-none-eabi -mcpu=cortex-m4 --sysroot=$ARM_NONE_EABI_SYSROOT -Oz" \
+  CFLAGS="--target=arm-none-eabi -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16 --sysroot=$ARM_NONE_EABI_SYSROOT -Oz" \
   make clean cross-build
 
 # same but disable progress bar
 CC=clang-10 \
-  CFLAGS="--target=arm-none-eabi -mcpu=cortex-m4 --sysroot=$ARM_NONE_EABI_SYSROOT -Oz -DCPROGBAR_ENABLE_BAR=0" \
+  CFLAGS="--target=arm-none-eabi -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16 --sysroot=$ARM_NONE_EABI_SYSROOT -Oz -DCPROGBAR_ENABLE_BAR=0" \
   make clean cross-build
 
 # same but targeting cortex-m0+

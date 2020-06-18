@@ -11,7 +11,8 @@ TEST_CFLAGS := \
     $(CFLAGS) \
     -fsanitize=address \
     -fsanitize=undefined \
-    -fstack-protector-strong
+    -fstack-protector-strong \
+    -g3 -Og
 
 .PHONY: example
 example: CFLAGS=$(TEST_CFLAGS)
@@ -19,7 +20,7 @@ example: test
 	./test 10000 2 100
 
 test: test.o cprogbar.o
-	$(CC) $(CFLAGS) $^ -o $@
+	$(CC) $(CFLAGS) $^ -lm -o $@
 
 .PHONY: cross-build
 cross-build: cprogbar.c

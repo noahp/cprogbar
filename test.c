@@ -28,22 +28,6 @@ int main(int argc, char **argv) {
   }
   printf("\n");
 
-  printf("Bar only:\n");
-  progbar = 0;
-  for (size_t i = 0; i < max_offset; i++) {
-    progbar = cprogbar(progbar, i, max_offset, fractional_digits);
-    usleep(us_delay);
-  }
-  printf("\n");
-
-  printf("Both:\n");
-  progbar = 0;
-  for (size_t i = 0; i < max_offset; i++) {
-    progbar = cprogpct_and_bar(progbar, i, max_offset, fractional_digits);
-    usleep(us_delay);
-  }
-  printf("\n");
-
   // show cursor
   fputs(CSI "?25h", stdout);
 
